@@ -37,6 +37,22 @@
                     <input type="submit"></input>
                 </form>
             </div>
+            <div ng-controller="MessageController as msgCtrl" ng-show="msgCtrl.user.number">
+                <ul>
+                    <li ng-repeat="message in msgCtrl.outbox">
+                        From: {{message.recipient}} <br />
+                        Message: {{message.body}}
+                    </li>
+                </ul>
+                <form name="sendForm" ng-submit="msgCtrl.sendMessage()">
+                    <label for="recipient">To: </label>
+                    <input type="phone" name="recipient" ng-model="msgCtrl.newMessage.recipient" />
+                    <br />
+                    <label for="body">Message: </label>
+                    <input type="text" name="body" ng-model="msgCtrl.newMessage.body" />
+                    <input type="submit"></input>
+                </form>
+            </div>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/components/angular/angular.js"></script>
