@@ -17,7 +17,7 @@
     specific language governing permissions and limitations
     under the License.
 -->
-<html>
+<html ng-app="pictie">
     <head>
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
@@ -30,17 +30,23 @@
     <body>
         <div class="app">
             <h1>Pictie</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+            <div ng-controller="AuthenticationController as auth" >
+                <p ng-show="auth.user.number">You are user {{auth.user.number}} <a ng-click="auth.logout()">change</a></p>
+                <form name="authForm" ng-submit="auth.login()" ng-hide="auth.user.number">
+                    <input type="phone" ng-model="auth.newNumber" />
+                    <input type="submit"></input>
+                </form>
             </div>
         </div>
-        <script type="text/javascript" src="js/components/faye/include.js"></script>
-        <script type="text/javascript" src="js/components/angular/angular.min.js"></script>
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/components/angular/angular.js"></script>
+        <script type="text/javascript" src="js/components/angular-phonegap-ready/ready.js"></script>
+        <script type="text/javascript" src="js/components/faye/include.js"></script>
+
         <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
         <script type="text/javascript">
-            app.initialize();
+            mobileApp.initialize();
         </script>
     </body>
 </html>
