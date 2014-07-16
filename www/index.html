@@ -39,8 +39,8 @@
             </div>
             <div ng-controller="MessageController as msgCtrl" ng-show="msgCtrl.user.number">
                 <ul>
-                    <li ng-repeat="message in msgCtrl.outbox">
-                        From: {{message.recipient}} <br />
+                    <li ng-repeat="message in inbox">
+                        From: {{message.sender}} <br />
                         Message: {{message.body}}
                     </li>
                 </ul>
