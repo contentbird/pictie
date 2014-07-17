@@ -4,7 +4,7 @@
   var faye = new Faye.Client(SERVER_URL+'/bayeux');
 
   app.factory('Inbox', ['$rootScope', function($rootScope){
-    var _inbox = [{sender: 'temp', recipient: 'temp', body: 'temp'}];
+    var _inbox = [{sender: 'default', recipient: 'inbox', body: 'message'}];
     var service = {};
 
     var broadcast = function () {
@@ -33,6 +33,14 @@
     this.subscribe = function(user){
       faye.subscribe('/user/'+user.number, function (data) {
         Inbox.add(data.message);
+        window.plugin.notification.local.add({
+            id:         Date.now().toString(),  // A unique id of the notifiction
+            message:    "There is a Pictie for you",  // The message that is displayed
+            title:      "New pictie",  // The title of the message
+            json:       {},  // Data to be passed through the notification
+            autoCancel: true, // Setting this flag and the notification is automatically canceled when the user clicks it
+            ongoing:    false, // Prevent clearing of notification (Android only)
+        });
       });
     }
   }]);
