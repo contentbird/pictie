@@ -16,3 +16,8 @@
 > cordova build
 > cordova emulate ios
 ```
+5- run pictie on your iphone, ipad, etc : connect your device to computer
+```
+> npm install -g ios-deploy
+> cordova run ios
+```
