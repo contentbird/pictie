@@ -33,5 +33,15 @@ var mobileApp = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+        // document.addEventListener("pause", function() {
+        //     console.log('PAUSED');
+        //     alert('PAUSED');
+        // }, false);
+        // document.addEventListener("resume", function() {
+        //     setTimeout(function() {
+        //         console.log('RESUMED');
+        //         alert('RESUMED');
+        //     }, 0);
+        // }, false);
     }
 };

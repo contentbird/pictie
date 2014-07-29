@@ -2,6 +2,8 @@
   var SERVER_URL = 'http://pictie.herokuapp.com';
   var app = angular.module('pictie', ['btford.phonegap.ready']);
   var faye = new Faye.Client(SERVER_URL+'/bayeux');
+  var user = {};
+  var outbox = [];
 
   app.factory('Inbox', ['$rootScope', function($rootScope){
     var _inbox = [{sender: 'default', recipient: 'inbox', body: 'message'}];
@@ -29,7 +31,7 @@
     return service;
   }]);
 
-  app.service('FayeService', ['Inbox', function(Inbox){
+  app.service('FayeService', ['Inbox', function (Inbox){
     this.subscribe = function(user){
       faye.subscribe('/user/'+user.number, function (data) {
         Inbox.add(data.message);
@@ -45,7 +47,27 @@
     }
   }]);
 
-  app.controller('AuthenticationController', ['$scope', 'FayeService', function($scope, FayeService){
+  app.service('EventService', ['phonegapReady', function(phonegapReady){
+    this.registerEvents = function(){
+      // phonegapReady(function () {
+        // alert('DEVICE is ready maaan');
+        document.addEventListener("resume", onResume, false);
+        document.addEventListener("pause", onPause, false);
+
+        function onResume() {
+          console.log('On Resume');
+          alert('ON RESUME')
+        }
+
+        function onPause() {
+          console.log('On Pause');
+          alert('ON PAUSE')
+        }
+      // });
+    };
+  }]);
+
+  app.controller('AuthenticationController', ['$scope', 'FayeService', function ($scope, FayeService){
     this.user = user;
     this.login = function(){
       this.user.number = this.newNumber;
@@ -94,8 +116,8 @@
 
   }]);
 
-  var user = {};
-
-  var outbox = [];
+  app.run(['$rootScope', 'EventService', function($rootScope, EventService) {
+    EventService.registerEvents();
+  }]);
 
 })();
