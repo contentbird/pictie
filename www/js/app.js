@@ -1,5 +1,5 @@
 (function() {
-  var SERVER_URL = 'http://pictie.herokuapp.com';
+  var SERVER_URL = 'http://pictie-dev.herokuapp.com';
   var app = angular.module('pictie', ['btford.phonegap.ready']);
   var faye = new Faye.Client(SERVER_URL+'/bayeux');
   var user = {};
