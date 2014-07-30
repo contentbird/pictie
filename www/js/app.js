@@ -1,5 +1,6 @@
 (function() {
   var SERVER_URL = 'http://pictie-dev.herokuapp.com';
+  // var SERVER_URL = 'http://localhost:5000';
   var app = angular.module('pictie', ['btford.phonegap.ready']);
   var faye = new Faye.Client(SERVER_URL+'/bayeux');
   var user = {};
@@ -32,6 +33,34 @@
   }]);
 
   app.service('FayeService', ['Inbox', function (Inbox){
+
+    this.init = function(user) {
+      this.authenticate(user);
+      this.subscribe(user);
+    }
+
+    this.authenticate = function(user){
+      faye.addExtension({
+        outgoing: function(message, callback) {
+          // Again, leave non-subscribe messages alone
+          if (message.channel !== '/meta/subscribe') {
+            return callback(message);
+          }
+
+          // Add ext field if it's not present
+          if (!message.ext) message.ext = {};
+          message.ext.authToken = 'secret';
+
+          message.ext.userId       = user.number;
+          message.ext.pushPlatform = 'CGM';
+          message.ext.pushToken    = 'dkfilsf';
+
+          // Carry on and send the message to the server
+          callback(message);
+        }
+      });
+    }
+
     this.subscribe = function(user){
       faye.subscribe('/user/'+user.number, function (data) {
         Inbox.add(data.message);
@@ -45,9 +74,10 @@
         // });
       });
     }
+
   }]);
 
-  app.service('EventService', ['phonegapReady', function(phonegapReady){
+  app.service('CordovaService', ['phonegapReady', function(phonegapReady){
     this.registerEvents = function(){
       // phonegapReady(function () {
         // alert('DEVICE is ready maaan');
@@ -72,7 +102,7 @@
     this.login = function(){
       this.user.number = this.newNumber;
       this.newNumber = null;
-      FayeService.subscribe(this.user);
+      FayeService.init(this.user);
     };
     this.logout = function(){
       this.user.number = null;
@@ -116,8 +146,8 @@
 
   }]);
 
-  app.run(['$rootScope', 'EventService', function($rootScope, EventService) {
-    EventService.registerEvents();
+  app.run(['$rootScope', 'CordovaService', function($rootScope, CordovaService) {
+    CordovaService.registerEvents();
   }]);
 
 })();
