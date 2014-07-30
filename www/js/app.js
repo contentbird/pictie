@@ -1,7 +1,7 @@
 (function() {
   var SERVER_URL = 'http://pictie-dev.herokuapp.com';
   // var SERVER_URL = 'http://localhost:5000';
-  var app = angular.module('pictie', ['btford.phonegap.ready']);
+  var app = angular.module('pictie', ['btford.phonegap.ready', 'ngCordova']);
   var faye = new Faye.Client(SERVER_URL+'/bayeux');
   var user = {};
   var outbox = [];
@@ -97,12 +97,13 @@
     };
   }]);
 
-  app.controller('AuthenticationController', ['$scope', 'FayeService', function ($scope, FayeService){
+  app.controller('AuthenticationController', ['$scope', 'FayeService', 'PushService', function ($scope, FayeService, PushService){
     this.user = user;
     this.login = function(){
       this.user.number = this.newNumber;
       this.newNumber = null;
       FayeService.init(this.user);
+      PushService.init();
     };
     this.logout = function(){
       this.user.number = null;
@@ -142,7 +143,76 @@
               alert('Error : your message was not sent');
             });
     };
+  }]);
 
+  app.service('PushService', ['$cordovaPush', function($cordovaPush) {
+    var androidConfig = {
+      "senderID":"632726955930",
+      "ecb":"this.onNotification"
+    };
+
+    var iosConfig = {
+      "badge":"true",
+      "sound":"true",
+      "alert":"true",
+      "ecb":"onNotificationAPN"
+    };
+
+    this.init = function () {
+      try {
+        $cordovaPush.register({"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"}).then(function(result) {
+          alert('result');
+          alert('result ' + JSON.stringify(result));
+        }, function(err) {
+          alert('error ' + err);
+        });
+      }
+      catch(err)
+      {
+        txt="There was an error on this page.\n\n";
+        txt+="Error description: " + err.message + "\n\n";
+        alert(txt);
+      }
+
+      function onNotificationAPN(e) {
+        alert('on notificationAPN');
+        if (e.alert) {
+          $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
+          // showing an alert also requires the org.apache.cordova.dialogs plugin
+          navigator.notification.alert(e.alert);
+        }
+
+        if (e.sound) {
+          // playing a sound also requires the org.apache.cordova.media plugin
+          var snd = new Media(e.sound);
+          snd.play();
+        }
+
+        if (e.badge) {
+          pushNotification.setApplicationIconBadgeNumber(successHandler, e.badge);
+        }
+      };
+
+    };
+
+    this.onNotificationAPN = function (e) {
+      alert('on notificationAPN');
+      if (e.alert) {
+        $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
+        // showing an alert also requires the org.apache.cordova.dialogs plugin
+        navigator.notification.alert(e.alert);
+      }
+
+      if (e.sound) {
+        // playing a sound also requires the org.apache.cordova.media plugin
+        var snd = new Media(e.sound);
+        snd.play();
+      }
+
+      if (e.badge) {
+        pushNotification.setApplicationIconBadgeNumber(successHandler, e.badge);
+      }
+    };
 
   }]);
 
