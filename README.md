@@ -72,7 +72,7 @@
 - Start your app and make sure connection is available
 - Download and install [APN Tester](https://itunes.apple.com/us/app/apn-tester-free/id626590577?mt=12)
 - Use a valid Device Token (you get a valid device token after registering the client with APNS servers)
-- Use the push SSL certificate (ie: aps_development.cr)
+- Use the push SSL certificate (ie: aps_development.cer)
 
 ##<a name="ios_provision"></a> iOS provisionning
 
@@ -122,11 +122,6 @@
   * In General > Identity section :
    * Ensure that Bundle identifier is __com.pictie.app__
    * Team: Select __Sebastien Neusch (pictieapp@gmail.com)__ (Add the account if it doesn't exist)
-  * In Build settings:
-   * Display all options
-   * For __Code Signing Identity__, select __iPhone Developer: Sebastien Neusch__ from Identities in Keychain
-   * For __Provisionning Profile__, select __pictie_dev_profile__
-
 
 Some useful links :
   - [APNS Tutorial](http://ameyashetti.wordpress.com/2009/07/31/apple-push-notification-service-tutorial/)
