@@ -2,7 +2,8 @@
 
 ### Contents
 - [Installation](#install)
-- [Provisionning profiles](#provision)
+- [Push Configuration](#push)
+- [iOS provisionning](#ios_provision)
 
 ##<a name="install"></a> Installation
 0. Prerequisites:
@@ -47,4 +48,24 @@
   npm install -g ios-deploy
   ```
 
-##<a name="profile"></a> Provisionning profiles
+##<a name="push"></a> Push Notifications
+
+### Android (GCM: Google Cloud Messaging)
+1. Navigate to the [Google Cloud Messaging Getting Started Guide](http://developer.android.com/google/gcm/gs.html) and follow the instructions for __Creating a Google API Project__, __Enabling the GCM Service__, and __Obtaining an API Key__
+
+   When creating the new key, choose Server key (and not Android key)  
+   Write down the Project ID and API Key obtained.
+
+2. Use these ProjectId as __senderId__ config key in angular PushService
+   
+   The API Key will be used in pictie-srv 
+
+### iOS (APNS: Apple Push Notification Service)
+ 
+   In order to register the client device on APNS servers, the app must be signed with a valid Provisionning Profile. It means:
+  * APNS must be activated on provisionning profile
+  * The app bundle identifier used when creating the cordova app (ex: com.pictie.app) must match the one of the provisonning profile _note:_  In this case, uppon registration you will see an error like "aucune autorisation 'aps environment' valide détecté pour l'application
+
+  Go to [iOS provisonning](#ios_provision) for an explanation on how to generate and integrate a valid provisionning profile for the app.
+
+##<a name="ios_provision"></a> iOS provisionning
