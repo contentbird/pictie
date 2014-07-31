@@ -1,23 +1,47 @@
 # Pictie: Visual messaging
+
+### Contents
+- [Installation](#install)
+
+##<a name="install"></a> Install
+0- Prerequisites:
+- Node.js 
+- Npm
+
 1- Install Cordova
 ```
-> you need node and npm installed
-> sudo npm install -g cordova
+sudo npm install -g cordova
 ```
-2- si pas de simulateur en ligne de commande ios : 
+
+2- Clone repo from github
 ```
-> npm install -g ios-sim
+git clone git@github.com:contentbird/pictie.git
 ```
-3- Git clone contentbird/pictie from github
-4- build and run pictie on the ios simulator
+
+3- Add Android & IOS platforms
 ```
-> cd pictie
-> cordova platform add ios
-> cordova build
-> cordova emulate ios
+cd pictie
+cordova platform add ios
+cordova platform add android
 ```
-5- run pictie on your iphone, ipad, etc : connect your device to computer
+
+3- Build and run pictie on the simulators
 ```
-> npm install -g ios-deploy
-> cordova run ios
+cordova emulate android
+cordova emulate ios
+```
+If you don't have iOS simulator available from command line, run this:
+```
+npm install -g ios-sim
+```
+
+5- Build and run pictie on your iPhone or iPad
+Connect your device to computer using cable and
+```
+cordova run ios
+cordova run android
+```
+To be able de deploy you might need this:
+```
+npm install -g ios-deploy
 ```
