@@ -155,50 +155,28 @@
       "badge":"true",
       "sound":"true",
       "alert":"true",
-      "ecb":"onNotificationAPN"
+      "ecb":"APNCallbackHandler"
     };
 
     this.init = function () {
       try {
-        $cordovaPush.register({"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"}).then(function(result) {
-          alert('result');
-          alert('result ' + JSON.stringify(result));
+        $cordovaPush.register(iosConfig).then(function(result) {
+          // TODO: This is where we should send it to server to store it
+          // alert('result ' + JSON.stringify(result));
         }, function(err) {
           alert('error ' + err);
         });
       }
-      catch(err)
-      {
+      catch(err) {
         txt="There was an error on this page.\n\n";
         txt+="Error description: " + err.message + "\n\n";
         alert(txt);
       }
 
-      function onNotificationAPN(e) {
-        alert('on notificationAPN');
-        if (e.alert) {
-          $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
-          // showing an alert also requires the org.apache.cordova.dialogs plugin
-          navigator.notification.alert(e.alert);
-        }
-
-        if (e.sound) {
-          // playing a sound also requires the org.apache.cordova.media plugin
-          var snd = new Media(e.sound);
-          snd.play();
-        }
-
-        if (e.badge) {
-          pushNotification.setApplicationIconBadgeNumber(successHandler, e.badge);
-        }
-      };
-
     };
 
     this.onNotificationAPN = function (e) {
-      alert('on notificationAPN');
       if (e.alert) {
-        $("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
         // showing an alert also requires the org.apache.cordova.dialogs plugin
         navigator.notification.alert(e.alert);
       }

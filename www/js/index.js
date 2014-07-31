@@ -45,3 +45,9 @@ var mobileApp = {
         // }, false);
     }
 };
+
+var APNCallbackHandler = function (event) {
+    var pushService = angular.element(document.querySelector('body')).injector()
+        .get('PushService');
+    pushService.onNotificationAPN(event);
+};

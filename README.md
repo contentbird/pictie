@@ -7,7 +7,7 @@
 
 ##<a name="install"></a> Installation
 0. Prerequisites:
-  * Node.js 
+  * Node.js
   * Npm
 
 1. Install Cordova
@@ -53,15 +53,15 @@
 ### Android (GCM: Google Cloud Messaging)
 1. Navigate to the [Google Cloud Messaging Getting Started Guide](http://developer.android.com/google/gcm/gs.html) and follow the instructions for __Creating a Google API Project__, __Enabling the GCM Service__, and __Obtaining an API Key__
 
-   When creating the new key, choose Server key (and not Android key)  
+   When creating the new key, choose Server key (and not Android key)
    Write down the Project ID and API Key obtained.
 
 2. Use these ProjectId as __senderId__ config key in angular PushService
-   
-   The API Key will be used in pictie-srv 
+
+   The API Key will be used in pictie-srv
 
 ### iOS (APNS: Apple Push Notification Service)
- 
+
    In order to register the client device on APNS servers, the app must be signed with a valid Provisionning Profile. It means:
   * APNS must be activated on provisionning profile
   * The app bundle identifier used when creating the cordova app (ex: com.pictie.app) must match the one of the provisonning profile _note:_  In this case, uppon registration you will see an error like "aucune autorisation 'aps environment' valide détecté pour l'application"
@@ -85,7 +85,7 @@
     * Set __Bundle ID__ to __com.pictie.app__ (this must match the bundle indentifier given at cordova app creation time, for iOS notification to work).
     * Enable __Push Notification__ service
 
-2. Create an APNS Enabled Certificate 
+2. Create an APNS Enabled Certificate
   * Log on to [Apple Developer](https://developer.apple.com/membercenter)
   * Go to __Certificates, Identifiers & Profiles__ and click __Certificates__
   * Click __+__ to add a Certificate
@@ -95,7 +95,7 @@
     * Upload the .certSigningRequest file
     * Download the generated __Apple Development iOS Push Services: com.pictie.app__ .cer certificate and store it in the vault.
 
-3. Create an iOS App Development Certificate 
+3. Create an iOS App Development Certificate
   * Follow the above steps for an APNS Enabled Certificate except you choose __iOS App Development__ instead of __Apple Push Notification Service SSL (Sandbox)__ to generate the __iOS Development: Sebastien Neusch__ .cer file
 
 4. Register Dev Devices
@@ -107,7 +107,7 @@
 
 5. Create a provisioning profile
   * Log on to [Apple Developer](https://developer.apple.com/membercenter)
-  * * Go to __Certificates, Identifiers & Profiles__ and click __Provisionning Profiles__
+  * Go to __Certificates, Identifiers & Profiles__ and click __Provisionning Profiles__
   * Now click on the __Provisioning Profiles__ section
   * Click __+__ to add a provisionning profile
     * Choose iOS App Development
@@ -117,7 +117,18 @@
     * Give it a name (suggeestion: use this pattern pictie_<dev|adhoc|appstore>_profile)
     * Download and store in the vault
 
-Some useful links : 
+6. Setup provisionning profile on Xcode
+  * Open Xcode and go to project properties
+  * In General > Identity section :
+   * Ensure that Bundle identifier is __com.pictie.app__
+   * Team: Select __Sebastien Neusch (pictieapp@gmail.com)__ (Add the account if it doesn't exist)
+  * In Build settings:
+   * Display all options
+   * For __Code Signing Identity__, select __iPhone Developer: Sebastien Neusch__ from Identities in Keychain
+   * For __Provisionning Profile__, select __pictie_dev_profile__
+
+
+Some useful links :
   - [APNS Tutorial](http://ameyashetti.wordpress.com/2009/07/31/apple-push-notification-service-tutorial/)
   - [Getting everything for building iOS apps](https://coderwall.com/p/eceasa)
   - [Push Notification Service iOS6](http://www.raywenderlich.com/32960/apple-push-notification-services-in-ios-6-tutorial-part-1)
