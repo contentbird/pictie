@@ -1,6 +1,7 @@
 (function() {
   var SERVER_URL = 'http://pictie-dev.herokuapp.com';
   // var SERVER_URL = 'http://localhost:5000';
+  // var SERVER_URL = 'http://192.168.1.14:5000';
   var app = angular.module('pictie', ['btford.phonegap.ready', 'ngCordova']);
   var faye = new Faye.Client(SERVER_URL+'/bayeux');
   var user = {};
@@ -103,7 +104,7 @@
       this.user.number = this.newNumber;
       this.newNumber = null;
       FayeService.init(this.user);
-      PushService.init();
+      PushService.init(this.user);
     };
     this.logout = function(){
       this.user.number = null;
@@ -145,34 +146,57 @@
     };
   }]);
 
-  app.service('PushService', ['$cordovaPush', function($cordovaPush) {
-    var androidConfig = {
-      "senderID":"632726955930",
-      "ecb":"this.onNotification"
+  app.service('PushService', ['$cordovaPush' , '$http', function($cordovaPush, $http) {
+
+    this.pushConfiguration = {};
+    this.user = null;
+
+    this.init = function (user) {
+      this.user = user;
+      this.setPushConfiguration();
+      this.registerDevice();
+      // TODO: Optimization: registering device should only be done on first install, not every time app is launched
+      // The token should be stored on local device and reused if it exist
+
     };
 
-    var iosConfig = {
-      "badge":"true",
-      "sound":"true",
-      "alert":"true",
-      "ecb":"APNCallbackHandler"
+    this.setPushConfiguration = function() {
+      if ( device.platform == 'android' || device.platform == 'Android' || device.platform == 'amazon-fireos') {
+        this.pushConfiguration = {"provider": "CGM", "params": { "senderID":"632726955930", "ecb":"this.onNotification"}};
+      }
+      else {
+        this.pushConfiguration = {"provider": "APNS", "params": { "badge":"true", "sound":"true", "alert":"true", "ecb":"APNCallbackHandler" }};
+      }
     };
 
-    this.init = function () {
+    this.registerDevice = function(){
+      var that = this;
       try {
-        $cordovaPush.register(iosConfig).then(function(result) {
-          // TODO: This is where we should send it to server to store it
-          // alert('result ' + JSON.stringify(result));
+        $cordovaPush.register(this.pushConfiguration['params']).then(function(token) {
+          that.storeTokenOnServer(token);
         }, function(err) {
           alert('error ' + err);
         });
       }
       catch(err) {
-        txt="There was an error on this page.\n\n";
+        txt="There was an error on device registration.\n\n";
         txt+="Error description: " + err.message + "\n\n";
         alert(txt);
       }
+    }
 
+    this.storeTokenOnServer = function(token) {
+      $http.post(SERVER_URL+'/push_registration', { userId: this.user.number,
+                                                    pushProvider: this.pushConfiguration['provider'],
+                                                    pushToken: token }).
+      success(this.tokenStored).
+      error(function(data){
+        alert('Error : could not store token on pictie server');
+      });
+    };
+
+    this.tokenStored = function(data) {
+      // alert('in tokenStored' + JSON.stringify(data));
     };
 
     this.onNotificationAPN = function (e) {
