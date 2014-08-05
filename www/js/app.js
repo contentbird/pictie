@@ -2,8 +2,8 @@
   var SERVER_URL = 'http://pictie-dev.herokuapp.com';
   // var SERVER_URL = 'http://localhost:5000';
   // var SERVER_URL = 'http://192.168.1.14:5000';
+
   var app = angular.module('pictie', ['btford.phonegap.ready', 'ngCordova']);
-  var faye = new Faye.Client(SERVER_URL+'/bayeux');
   var user = {};
   var outbox = [];
 
@@ -35,13 +35,28 @@
 
   app.service('FayeService', ['Inbox', function (Inbox){
 
+    var fayeClient   = null;
+    var userId       = null;
+    var subscription = null;
+    var status       = null;
+
     this.init = function(user) {
-      this.authenticate(user);
-      this.subscribe(user);
+      userId     = user.number;
+      this.connect();
     }
 
-    this.authenticate = function(user){
-      faye.addExtension({
+    this.connect = function(){
+      fayeClient = new Faye.Client(SERVER_URL+'/bayeux');
+      this.authenticate();
+      this.subscribe();
+    }
+
+    this.disconnect = function(){
+      fayeClient.disconnect();
+    }
+
+    this.authenticate = function(){
+      fayeClient.addExtension({
         outgoing: function(message, callback) {
           // Again, leave non-subscribe messages alone
           if (message.channel !== '/meta/subscribe') {
@@ -51,10 +66,7 @@
           // Add ext field if it's not present
           if (!message.ext) message.ext = {};
           message.ext.authToken = 'secret';
-
-          message.ext.userId       = user.number;
-          message.ext.pushPlatform = 'CGM';
-          message.ext.pushToken    = 'dkfilsf';
+          message.ext.userId    = userId;
 
           // Carry on and send the message to the server
           callback(message);
@@ -62,8 +74,8 @@
       });
     }
 
-    this.subscribe = function(user){
-      faye.subscribe('/user/'+user.number, function (data) {
+    this.subscribe = function(){
+      subscription = fayeClient.subscribe('/user/'+userId, function (data) {
         Inbox.add(data.message);
         // window.plugin.notification.local.add({
         //     id:         Date.now().toString(),  // A unique id of the notifiction
@@ -78,7 +90,7 @@
 
   }]);
 
-  app.service('CordovaService', ['phonegapReady', function(phonegapReady){
+  app.service('CordovaService', ['phonegapReady', 'FayeService', function(phonegapReady, FayeService){
     this.registerEvents = function(){
       // phonegapReady(function () {
         // alert('DEVICE is ready maaan');
@@ -86,13 +98,11 @@
         document.addEventListener("pause", onPause, false);
 
         function onResume() {
-          console.log('On Resume');
-          alert('ON RESUME')
+          FayeService.connect()
         }
 
         function onPause() {
-          console.log('On Pause');
-          alert('ON PAUSE')
+          FayeService.disconnect() //Although not using Cordova API nor any plugin, this code is only excuted when apps is back on foreground
         }
       // });
     };
