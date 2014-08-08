@@ -23,6 +23,14 @@
                         {
                             "xml": "<feature name=\"PushPlugin\"><param name=\"ios-package\" value=\"PushPlugin\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"File\"><param name=\"ios-package\" value=\"CDVFile\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Media\"><param name=\"ios-package\" value=\"CDVSound\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -50,13 +58,13 @@
                     "AssetsLibrary.framework": [
                         {
                             "xml": "false",
-                            "count": 1
+                            "count": 2
                         }
                     ],
                     "MobileCoreServices.framework": [
                         {
                             "xml": "false",
-                            "count": 1
+                            "count": 2
                         }
                     ]
                 }
@@ -72,10 +80,16 @@
         },
         "com.phonegap.plugins.PushPlugin": {
             "PACKAGE_NAME": "com.pictie.app"
+        },
+        "org.apache.cordova.media": {
+            "PACKAGE_NAME": "com.pictie.app"
         }
     },
     "dependent_plugins": {
         "org.apache.cordova.device": {
+            "PACKAGE_NAME": "com.pictie.app"
+        },
+        "org.apache.cordova.file": {
             "PACKAGE_NAME": "com.pictie.app"
         }
     }

@@ -51,3 +51,9 @@ var APNCallbackHandler = function (event) {
         .get('PushService');
     pushService.onNotificationAPN(event);
 };
+
+var CGMCallbackHandler = function (event) {
+    var pushService = angular.element(document.querySelector('body')).injector()
+        .get('PushService');
+    pushService.onNotification(event);
+};
