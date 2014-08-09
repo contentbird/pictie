@@ -1,7 +1,7 @@
 (function() {
-  var SERVER_URL = 'http://pictie-dev.herokuapp.com';
+  // var SERVER_URL = 'http://pictie-dev.herokuapp.com';
   // var SERVER_URL = 'http://localhost:5000';
-  // var SERVER_URL = 'http://192.168.1.14:5000';
+  var SERVER_URL = 'http://192.168.1.14:5000';
 
   var app = angular.module('pictie', ['btford.phonegap.ready', 'ngCordova']);
   var user = {};
@@ -164,11 +164,12 @@
 
     this.init = function (user) {
       this.user = user;
-      this.setPushConfiguration();
-      this.registerDevice();
+      if (window.runningOnDevice() == true) {
+        this.setPushConfiguration();
+        this.registerDevice();
+      }
       // TODO: Optimization: registering device should only be done on first install, not every time app is launched
       // The token should be stored on local device and reused if it exist
-
     };
 
     this.setPushConfiguration = function() {

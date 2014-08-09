@@ -57,3 +57,7 @@ var CGMCallbackHandler = function (event) {
         .get('PushService');
     pushService.onNotification(event);
 };
+
+var runningOnDevice = function() {
+    return /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+}
